@@ -1,4 +1,3 @@
-from lightning_models.swasd import LitSwASD
 from lightning_models.byol import LitBYOL
 from lightning_models.swav import LitSwAV
 from lightning_models.classifier import LitClassifier
@@ -23,8 +22,6 @@ def get_pl_model(model_type, n_classes, n_clusters, loss, loss_params, lr, fold)
         return LitBYOL(model_type, n_clusters, loss, loss_params, lr, fold)
     elif model_type == "SwAV":
         return LitSwAV(model_type, n_clusters, loss, loss_params, lr, fold)
-    elif model_type == "SwASD":
-        return LitSwASD(model_type, n_clusters, loss, loss_params, lr, fold)
     elif model_type == "SupCon":
         return LitSupCon(model_type, n_classes, n_clusters, loss, loss_params, lr, fold)
     elif model_type == "SCAN":

@@ -1,4 +1,3 @@
-from lightning_models.swasd import LitSwASD
 from lightning_models.byol import LitBYOL
 from lightning_models.swav import LitSwAV
 from lightning_models.classifier import LitClassifier
@@ -9,6 +8,7 @@ from lightning_models.sim_clr import LitSimCLR
 from lightning_models.vae import LitVAE
 from lightning_models.sup_con import LitSupCon
 from lightning_models.scan import LitSCAN
+
 
 def get_pl_model(model_type, n_classes, n_clusters, loss, loss_params, lr, fold):
     if model_type in ["Classification", "ClassificationOfSubgroups"]:
@@ -23,8 +23,6 @@ def get_pl_model(model_type, n_classes, n_clusters, loss, loss_params, lr, fold)
         return LitBYOL(model_type, n_clusters, loss, loss_params, lr, fold)
     elif model_type == "SwAV":
         return LitSwAV(model_type, n_clusters, loss, loss_params, lr, fold)
-    elif model_type == "SwASD":
-        return LitSwASD(model_type, n_clusters, loss, loss_params, lr, fold)
     elif model_type == "SupCon":
         return LitSupCon(model_type, n_classes, n_clusters, loss, loss_params, lr, fold)
     elif model_type == "SCAN":
@@ -35,4 +33,3 @@ def get_pl_model(model_type, n_classes, n_clusters, loss, loss_params, lr, fold)
         return LitVAE(model_type, loss, loss_params, lr, fold)
     else:
         return NotImplementedError
-

@@ -44,16 +44,6 @@ class ResNet18(nn.Module):
             self.fc_conditional_classifier = nn.Linear(num_features, num_classes)
             self.fc_clustering = nn.Linear(num_features, num_classes)
 
-        elif method_name in ["SwASD"]:
-            self.non_linear_head = nn.Sequential(nn.Linear(num_features, latent_dim),
-                                                 nn.ReLU(inplace=True),
-                                                 nn.Linear(latent_dim, latent_dim), )
-            self.prototypes = nn.Linear(latent_dim, num_classes, bias=False)
-            self.prototypes.weight.data = torch.nn.functional.normalize(self.prototypes.weight.data, dim=1, p=2)
-            self.healthy_prototype = nn.Linear(latent_dim, 1, bias=False)
-            self.healthy_prototype.weight.data = torch.nn.functional.normalize(self.healthy_prototype.weight.data, dim=1, p=2)
-            self.temperature = 0.1
-
         elif method_name in ["SCAN"]:
             self.non_linear_head = nn.Sequential(nn.Linear(num_features, latent_dim),
                                                  nn.ReLU(inplace=True),
@@ -77,12 +67,6 @@ class ResNet18(nn.Module):
             out_clusters = torch.softmax(self.fc_clustering(representation_vector), dim=-1)
             out_classes = torch.sigmoid(self.fc_conditional_classifier(representation_vector))
             return out_classes, out_clusters, representation_vector
-
-        if self.method_name == "SwASD":
-            representation_vector = torch.flatten(representation_vector, 1)
-            head_features = nn.functional.normalize(self.non_linear_head(representation_vector), dim=1, p=2)
-            clustering_probabilities = self.softmax(self.prototypes(head_features) / self.temperature)
-            return head_features, clustering_probabilities
 
         if self.method_name == "SCAN":
             representation_vector = torch.flatten(representation_vector, 1)
