@@ -1,0 +1,82 @@
+## Configuration file for SupCon applied on PNEUMONIA
+
+XP_NAME:
+  xp_name : "pneumonia_subtype_SupCon"
+
+#############################################
+########### DATASET CONFIG ##################
+#############################################
+DATASET_CONFIG:
+  ROOT:
+    input_path: "/home/ids/rlouiset/pneumonia/"
+    metadata_path: "/home/ids/rlouiset/pneumonia/"
+  DATA_DIRS:
+    input_path:
+      train_val :
+        - "X_train.npy" # TRAIN dataset
+        - "X_test.npy" # VAL dataset
+      test : "X_test.npy" # TEST dataset
+    metadata_path:
+      train_val :
+        - "y_train.csv" # TRAIN metadata .csv
+        - "y_test.csv" # VAL metadata .csv
+      test : "y_test.csv" # TEST metadata .csv
+
+#############################################
+######## FEATURES AND LABELS CONFIG #########
+#############################################
+LABELS_DICT:
+  nb_folds: 3
+  labels: ['subtype', 'diagnosis']
+
+#############################################
+######## TRAINING CONFIG #########
+#############################################
+COMPUTATION_DICT:
+  pin_mem: False
+  cuda: True
+  gpus: 1
+  num_cpu_workers: 16
+  persistent_workers: True
+
+MODEL_CONFIG:
+  pretrained_path: ~
+  n_classes: ~
+  n_clusters: 2
+  model_type: 'SupCon'
+
+LOSS_CONFIG:
+  loss: 'SupCon'
+  loss_params:
+    scaler: "robust"
+    temperature: 0.1
+
+OPTIMIZER_CONFIG:
+  lr: 0.00001
+
+TRAINING_CONFIG:
+  self_supervision: 'SupCon'
+  data_augmentation:
+    random_resized_crop :
+      size : 224
+    horizontal_flip:
+      p: 0.5
+    gaussian_blur:
+      kernel_size: 3
+    random_affine:
+      degrees: 25
+      translate:
+        - 0.1
+        - 0.1
+
+  batch_size: 256
+  min_epochs: 50
+  max_epochs: 50
+  drop_last: False
+  reload_dataloader: True
+
+#############################################
+########### METRICS_CONFIG ##################
+#############################################
+METRICS_CONFIG:
+  checkpoint_dir: "/home/ids/rlouiset/records/"

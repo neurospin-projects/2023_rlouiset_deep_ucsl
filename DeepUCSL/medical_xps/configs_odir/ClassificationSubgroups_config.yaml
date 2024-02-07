@@ -1,0 +1,80 @@
+## Configuration file for Classification of Subgroups applied on ODIR Subgroups Classification
+
+XP_NAME:
+  xp_name : "odir_subtype_Classification"
+
+#############################################
+########### DATASET CONFIG ##################
+#############################################
+DATASET_CONFIG:
+  ROOT:
+    input_path: "/home/ids/rlouiset/odir/"
+    metadata_path: "/home/ids/rlouiset/odir/"
+  DATA_DIRS:
+    input_path:
+      train_val :
+        - "X_train_disease.npy" # TRAIN dataset
+        - "X_test_disease.npy" # VAL dataset
+      test : "X_test_disease.npy" # TEST dataset
+    metadata_path:
+      train_val :
+        - "y_train_disease.csv" # TRAIN metadata .csv
+        - "y_test_disease.csv" # VAL metadata .csv
+      test : "y_test_disease.csv" # TEST metadata .csv
+
+#############################################
+######## FEATURES AND LABELS CONFIG #########
+#############################################
+LABELS_DICT:
+  nb_folds: 3
+  labels: ['subtype', 'diagnosis']
+
+#############################################
+######## TRAINING CONFIG #########
+#############################################
+COMPUTATION_DICT:
+  pin_mem: False
+  cuda: True
+  gpus: 1
+  num_cpu_workers: 8
+  persistent_workers: True
+
+MODEL_CONFIG:
+  pretrained_path: ~
+  n_classes: 5
+  n_clusters: ~
+  model_type: 'ClassificationOfSubgroups'
+
+LOSS_CONFIG:
+  loss: 'CrossEntropy'
+  loss_params:
+    scaler: 'standard'
+    class_weights: ~
+
+OPTIMIZER_CONFIG:
+  lr: 0.00002
+
+TRAINING_CONFIG:
+  self_supervision: ~
+  data_augmentation:
+    vertical_flip :
+      p : 0.5
+    gaussian_blur :
+      kernel_size : 5
+    random_affine :
+      degrees : 45
+      translate :
+        - 0.05
+        - 0.05
+
+  batch_size: 256
+  min_epochs: 50
+  max_epochs: 50
+  drop_last: False
+  reload_dataloader: True
+
+#############################################
+########### METRICS_CONFIG ##################
+#############################################
+METRICS_CONFIG:
+  checkpoint_dir: "/home/ids/rlouiset/records/"
